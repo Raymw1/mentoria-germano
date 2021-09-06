@@ -5,7 +5,7 @@ const type4 = {};
 const type5 = undefined;
 
 function printType(value) {
-  return console.log(`Tipo de ${value}: ${typeof(value)}`);
+  return console.log(`Tipo de ${value}: ${typeof value}`);
 }
 
 printType(type1);

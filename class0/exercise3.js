@@ -12,15 +12,23 @@ function sortArray(array) {
 }
 
 function sortInEvenAndOdd(array) {
-  const even = [];
-  const odd = [];
-  array.forEach(num => {
-    if (num % 2 === 0) even.push(num);
-  });
-  array.forEach(num => {
-    if (num % 2 !== 0) odd.push(num);
-  });
-  return even.concat(odd)
+  array = array.sort((num1, num2) => {
+    if (num1 % 2 == 0) {
+      return -1;
+    } else {
+      return 1;
+    }
+  })
+  return array
+  // const even = [];
+  // const odd = [];
+  // array.forEach(num => {
+  //   if (num % 2 === 0) even.push(num);
+  // });
+  // array.forEach(num => {
+  //   if (num % 2 !== 0) odd.push(num);
+  // });
+  // return even.concat(odd)
 }
 
 sortArray(array);
