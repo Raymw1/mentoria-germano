@@ -5,26 +5,11 @@ const fs = require("fs");
 
 let names = null;
 server.on("request", (req, res) => {
-  if (req.url === "/" && req.method === "GET") {
-    res.write(`<html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Document</title>
-    </head>
-    <body>
-      <h1>Página inicial</h1>
-    </body>
-    </html>`);
-  }
-
-  if (req.url.startsWith("/json") && req.method === "GET") {
-    let query = req.url.split("=");
-    let wantedNames = null;
+  if (req.url.startsWith("/") && req.method === "GET") {
+    let results = [];
     try {
-      query.shift();
-      query = query[0]?.split(",");
+      let queries = req.url.split("?");
+      queries.shift();
       let file = null
       try {
         file = fs.readFileSync("src/names.txt", "utf-8").split("\n");
@@ -32,19 +17,21 @@ server.on("request", (req, res) => {
         console.error(err);
         file = names
       }
-      wantedNames = new Set();
-      if (Array.isArray(file)) {
-        file?.forEach((name) => {
-          query.forEach((queryName) => {
-            if (name.includes(queryName)) wantedNames.add(name);
-          });
-        });
+      if (queries.length > 0) {
+        queries = queries[0].split("&");
+        const values = {};
+        queries.forEach(query => {
+          const name = `${query.split("=")[0]}`;
+          const value = `${query.split("=")[1]}`;
+          values[name] = value;
+        })
+        const wantedName = values.name;
+        file.forEach(name => {
+          if (name.includes(wantedName)) results.push(name);
+        })
       } else {
-        query.forEach((queryName) => {
-          if (file?.includes(queryName)) wantedNames.add(file);
-        });
+        results = file
       }
-      wantedNames = Array.from(wantedNames);
     } catch {
       try {
         file = fs.readFileSync("src/names.txt", "utf-8").split("\n");
@@ -52,12 +39,12 @@ server.on("request", (req, res) => {
         console.error(err);
         file = names
       }
-      wantedNames = file
+      results = file
     }
-    res.end(JSON.stringify({ names: wantedNames }));
+    res.end(JSON.stringify({ names: results }));
   }
 
-  if (req.url.startsWith("/json") && req.method === "POST") {
+  if (req.url.startsWith("/") && req.method === "POST") {
     let body = [];
     req
       .on("data", (bit) => {
