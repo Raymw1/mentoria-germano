@@ -11,12 +11,8 @@ routes.get("/:id", productController.findOne);
 
 routes.post("/", productController.post);
 
-// routes.post("/", productController.post);
+routes.put("/:id", productController.update);
 
-// routes.delete("/:id?", (req, res) => {
-//   const { id } = req.params;
-//   id ? productList = productList.filter(product => product.id != id) : productList = [];
-//   return res.send(productList);
-// });
+routes.delete("/:id", productController.delete);
 
 module.exports = routes;
